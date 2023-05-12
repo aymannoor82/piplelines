@@ -3,16 +3,25 @@ on: push
 name: Integration
 
 jobs:
-  build:
+  buildjob:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v3
         with:
-          go-version: ${{ matrix.go_version }}
-      - name: Build
+          go-version: "1.18"
+      - name: Build-go
         env:
           CGO_ENABLED: 0
         run: |
           go build -o myproject2
+  builddocker:
+    runs-on: ubuntu-20.04
+    needs: [buildjob]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v3
+      - name: Build-docker
+        run: |
+          docker build .
 
